@@ -1,19 +1,44 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const MyBooks = ({ books, deleteMyBook }) => {
+const MyBooks = () => {
   const handleDelete = async (book) => {
-    deleteMyBook(book);
+    try {
+      await axios.delete(`http://localhost:8080/book/${book.id}`);
+      fetchBooks();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+    }
   };
 
-  useEffect(() => {}, [books]);
+  const [books, setBooks] = useState([]);
+
+  const fetchBooks = async () => {
+    const response = await axios.get("http://localhost:8080/book");
+    setBooks(response.data);
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  if (books.length === 0) {
+    return (
+      <div className="container my-2">
+        <strong className="text-warning-emphasis fs-1">
+          Please add your favourite books to display here
+        </strong>
+      </div>
+    );
+  }
 
   const renderedBooks = books.map((book) => {
     return (
       <tr key={book.id}>
-        <th scope="row">{book.id}</th>
-        <td>{book.name}</td>
-        <td>{book.author}</td>
-        <td>{book.price}</td>
+        <th scope="row">{book.book.id}</th>
+        <td>{book.book.name}</td>
+        <td>{book.book.author}</td>
+        <td>{book.book.price}</td>
         <td>
           <button
             className="btn btn-secondary btn-sm"

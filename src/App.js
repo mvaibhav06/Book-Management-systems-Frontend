@@ -10,12 +10,6 @@ import axios from "axios";
 
 function App() {
   const [books, setBooks] = useState([]);
-  const [mybooks, setMyBooks] = useState([]);
-
-  const fetchMyBooks = async () => {
-    const response = await axios.get("http://localhost:8080/book/mybooks");
-    setMyBooks(response.data);
-  };
 
   const fetchBooks = async () => {
     const response = await axios.get("http://localhost:8080/api");
@@ -30,19 +24,8 @@ function App() {
     fetchBooks();
   };
 
-  const deleteMyBook = async (book) => {
-    try {
-      await axios.delete(`http://localhost:8080/book/${book.id}`);
-
-      fetchMyBooks();
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
-
   useEffect(() => {
     fetchBooks();
-    fetchMyBooks();
   }, []);
 
   return (
@@ -55,13 +38,15 @@ function App() {
 
           <Route
             path="/books"
-            element={<Books books={books} addBook={addBook} />}
+            element={
+              <Books books={books} addBook={addBook} fetchBooks={fetchBooks} />
+            }
           />
+          <Route path="/mybooks" element={<MyBooks />} />
           <Route
-            path="/mybooks"
-            element={<MyBooks books={mybooks} deleteMyBook={deleteMyBook} />}
+            path="/register"
+            element={<Register fetchBooks={fetchBooks} />}
           />
-          <Route path="/register" element={<Register />} />
         </Routes>
       </BrowserRouter>
     </div>

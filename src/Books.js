@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-const Books = ({ books, addBook }) => {
+const Books = ({ books, addBook, fetchBooks }) => {
   const navigate = useNavigate();
 
   useEffect(() => {}, [books]);
